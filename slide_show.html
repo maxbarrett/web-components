@@ -12,77 +12,80 @@
 
 <script>
 
-	var mySlideShow = {
+var mySlideShow = {
 
-		importDoc: document.currentScript.ownerDocument,
+	importDoc: document.currentScript.ownerDocument,
 
-		slideshowPrototype : Object.create(HTMLElement.prototype, {
-			// When using Object.create properties must use 'value'
-			// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/create
+	slideshowPrototype : Object.create(HTMLElement.prototype, {
+		// When using Object.create properties must use 'value'
+		// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/create
 
-			createdCallback: {
-				value: function(){
-					// grab <template> above
-					var template = mySlideShow.importDoc.querySelector('#slideShow');
+		createdCallback: {
+			value: function(){
+				// grab <template> above
+				var template = mySlideShow.importDoc.querySelector('#slideShow');
 
-					// https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode
-					var clone = document.importNode(template.content, true);
+				// https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode
+				var clone = document.importNode(template.content, true);
 
-					// this = <slide-show> element
-					// Create shadow root and put <template> into <slide-show>
-					this.createShadowRoot().appendChild(clone);
+				// this = <slide-show> element
+				// Create shadow root and put <template> into <slide-show>
+				this.createShadowRoot().appendChild(clone);
 
-					this.addEventListener('click', function(e) {
-						console.log('Slideshow clicked');
-					});
-				}
-			},
-
-			attachedCallback: {
-				value: function(){
-					// fires when injected into the document
-					//console.log(this);
-				}
-			},
-
-			detachedCallback: {
-				value: function(){
-					// fires when removed from the document
-					//console.log(this);
-				}
-			},
-
-			attributeChangedCallback: {
-				value: function(attrName, oldVal, newVal){
-					// fires when an attribute is added, removed, or changed.
-					//console.log(attrName, oldVal, newVal);
-				}
-			},
-
-			next: {
-				value: function(){
-					// Move to the next item in the slideshow
-				}
-			},
-
-			previous: {
-				value: function(){
-					// Move to the previous item in the slideshow
-				}
+				this.addEventListener('click', function(e) {
+					console.log('Slideshow clicked');
+					this.next();
+				});
 			}
-		})
-	};
+		},
 
-	// Define a READ-ONLY property 'speed'
-	// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
-	Object.defineProperty(mySlideShow.slideshowPrototype, 'speed', {value: 500});
+		attachedCallback: {
+			value: function(){
+				// fires when injected into the document
+				//console.log(this);
+			}
+		},
+
+		detachedCallback: {
+			value: function(){
+				// fires when removed from the document
+				//console.log(this);
+			}
+		},
+
+		attributeChangedCallback: {
+			value: function(attrName, oldVal, newVal){
+				// fires when an attribute is added, removed, or changed.
+				//console.log(attrName, oldVal, newVal);
+			}
+		},
+
+		next: {
+			value: function(){
+				console.log('NEXT!');
+				// Move to the next item in the slideshow
+			}
+		},
+
+		previous: {
+			value: function(){
+				console.log('PREVIOUS!');
+				// Move to the previous item in the slideshow
+			}
+		}
+	})
+};
+
+// Define a READ-ONLY property 'speed'
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+Object.defineProperty(mySlideShow.slideshowPrototype, 'speed', {value: 500});
 
 
-	//Register slide-show element with a default prototype and extending an existing element
-	document.registerElement('slide-show', {
-		prototype: mySlideShow.slideshowPrototype,
-		// use extends for: <div is="slide-show"></div>
-		// extends: 'div'
-	});
+//Register slide-show element with a default prototype
+document.registerElement('slide-show', {
+	prototype: mySlideShow.slideshowPrototype,
+	// use extends for: <div is="slide-show"></div>
+	// extends: 'div'
+});
 
 </script>

@@ -21,6 +21,8 @@ var myButton = {
 }
 
 myButton.buttonPrototype.createdCallback = function() {
+	console.log('Created a button');
+
 	// grab <template> above
 	var template = myButton.importDoc.querySelector('#megaButton');
 
@@ -53,8 +55,5 @@ myButton.mb.innerHTML = "<b>Dynamic content, in the element's Shadow DOM</b>";
 
 // Add it to the page:
 document.body.appendChild(myButton.mb);
-
-
-
 
 </script>
