@@ -1,12 +1,16 @@
 <template id="megaButton">
 	<style>
-		/*These styles are not applied to innerHTML content*/
-		:host { text-align:center; border:5px solid red; background:aqua; padding:10px; margin:0; }
+		/* :host styles are overriden by [is="mega-button"] rule in index.html */
+		:host { text-align:center; border:5px solid red; background:aqua; padding:10px; margin:20px auto; }
+		.outer { background:DeepPink; }
 	</style>
 
-	<content>
+	<div class="outer">
+		<content>
 		<!-- Content between <button is="mega-button">...</button> tags will appear here -->
-	</content>
+		</content>
+	</div>
+
 </template>
 
 <script>

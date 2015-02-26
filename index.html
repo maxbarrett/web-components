@@ -6,9 +6,9 @@
 	<link rel="import" href="mega_button.html"></link>
 
 	<style>
-	 	[is="mega-button"] { border-color:green; margin:0 auto; display:block; }
-	 	mega-button { border:1px solid DarkOrchid; display:block; height:20px; }
-	 	:unresolved { opacity:0.5;}
+		/*These styles override :host styles in template*/
+	 	[is="mega-button"] { border-color:green; }
+	 	:unresolved { opacity:0.5; }
 	</style>
 
 </head>
@@ -16,11 +16,7 @@
 
 	<slide-show>A list of images...</slide-show>
 
-	<br>
-
-	<div class="outer">Testing the shadow dom</div>
-
-	<br>
+	<div class="outer">Testing the shadow dom, no styles added to .outer class</div>
 
 	<button is="mega-button">I'm a mega button</button>
 
