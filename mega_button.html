@@ -1,5 +1,6 @@
 <template id="megaButton">
 	<style>
+		/*These styles are not applied to innerHTML content*/
 		:host { text-align:center; border:5px solid red; background:aqua; padding:10px; margin:0; }
 	</style>
 
@@ -10,56 +11,46 @@
 
 <script>
 
-	var myButton = {
+var myButton = {
+	buttonPrototype : Object.create(HTMLElement.prototype),
+	importDoc : document.currentScript.ownerDocument,
+}
 
-		importDoc: document.currentScript.ownerDocument,
+myButton.buttonPrototype.createdCallback = function() {
+	// grab <template> above
+	var template = myButton.importDoc.querySelector('#megaButton');
 
-		megaButtonPrototype : Object.create(HTMLElement.prototype, {
-			// When using Object.create properties must use 'value'
-			// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/create
+	// https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode
+	var clone = document.importNode(template.content, true);
 
-			createdCallback: {
-				value: function(){
-					// grab <template> above
-					var template = myButton.importDoc.querySelector('#megaButton');
+	// this = <mega-button> element
+	// Create shadow root and put <template> into <mega-button>
+	this.createShadowRoot().appendChild(clone);
 
-					// https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode
-					var clone = document.importNode(template.content, true);
-
-					// this = <slide-show> element
-					// Create shadow root and put <template> into <slide-show>
-					this.createShadowRoot().appendChild(clone);
-				}
-			},
-
-			attachedCallback: {
-				value: function(){
-					// fires when injected into the document
-					//console.log(this);
-				}
-			},
-
-			detachedCallback: {
-				value: function(){
-					// fires when removed from the document
-					//console.log(this);
-				}
-			},
-
-			attributeChangedCallback: {
-				value: function(){
-					// fires when an attribute is added, removed, or changed.
-					//console.log(this);
-				}
-			}
-		})
-
-	};
-
-	//Register mega-button element with a default prototype and extending an existing element
-	document.registerElement('mega-button', {
-		prototype: myButton.megaButtonPrototype,
-		extends: 'button'
+	// Add event listener
+	this.addEventListener('click', function(e) {
+		console.log('Mega button clicked');
 	});
+};
+
+// Register mega-button definition:
+var MegaButton = document.registerElement('mega-button', {
+	prototype: myButton.buttonPrototype,
+	extends: 'button'
+});
+
+
+
+// Instantiate a new mega-button:
+myButton.mb = new MegaButton();
+
+// An example of creating 'dynamic' content:
+myButton.mb.innerHTML = "<b>Dynamic content, in the element's Shadow DOM</b>";
+
+// Add it to the page:
+document.body.appendChild(myButton.mb);
+
+
+
 
 </script>

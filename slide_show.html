@@ -31,6 +31,10 @@
 					// this = <slide-show> element
 					// Create shadow root and put <template> into <slide-show>
 					this.createShadowRoot().appendChild(clone);
+
+					this.addEventListener('click', function(e) {
+						console.log('Slideshow clicked');
+					});
 				}
 			},
 
@@ -68,7 +72,6 @@
 			}
 		})
 	};
-
 
 	// Define a READ-ONLY property 'speed'
 	// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
