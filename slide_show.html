@@ -1,0 +1,71 @@
+<template id="slideShow">
+	<style>
+		.outer { width:50%; margin:20px auto;  text-align:center; border:1px solid gray; }
+	</style>
+
+	<div class="outer">
+		<content>
+			<!-- Content between <slide-show>...</slide-show> tags will appear here -->
+		</content>
+	</div>
+</template>
+
+<script>
+	var myApp = {
+
+		importDoc: document.currentScript.ownerDocument,
+
+		slideshowPrototype : Object.create(HTMLElement.prototype, {
+			// When using Object.create properties must use 'value'
+			// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/create
+
+			createdCallback: {
+				value: function(){
+					var template = myApp.importDoc.querySelector('#slideShow');
+					var clone = document.importNode(template.content, true);
+					this.createShadowRoot().appendChild(clone);
+				}
+			},
+
+			attachedCallback: {
+				value: function(){
+					// fires when injected into the document
+					console.log(this);
+				}
+			},
+
+			detachedCallback: {
+				value: function(){
+					// fires when removed from the document
+					console.log(this);
+				}
+			},
+
+			attributeChangedCallback: {
+				value: function(){
+					// fires when an attribute is added, removed, or changed.
+					console.log(this);
+				}
+			},
+
+			next: {
+				value: function(){
+					// Move to the next item in the slideshow
+				}
+			},
+
+			previous: {
+				value: function(){
+					// Move to the previous item in the slideshow
+				}
+			}
+		})
+
+	};
+
+	// Register slide-show element with a default prototype and extending an existing element
+	document.registerElement('slide-show', {
+		prototype: myApp.slideshowPrototype
+	});
+
+</script>
