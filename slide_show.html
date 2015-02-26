@@ -1,6 +1,6 @@
 <template id="slideShow">
 	<style>
-		.outer { width:50%; margin:20px auto;  text-align:center; border:1px solid gray; }
+		.outer { width:50%; margin:20px auto; padding:20px; text-align:center; border:1px solid gray; background:yellow; }
 	</style>
 
 	<div class="outer">
@@ -11,7 +11,8 @@
 </template>
 
 <script>
-	var myApp = {
+
+	var mySlideShow = {
 
 		importDoc: document.currentScript.ownerDocument,
 
@@ -21,8 +22,14 @@
 
 			createdCallback: {
 				value: function(){
-					var template = myApp.importDoc.querySelector('#slideShow');
+					// grab <template> above
+					var template = mySlideShow.importDoc.querySelector('#slideShow');
+
+					// https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode
 					var clone = document.importNode(template.content, true);
+
+					// this = <slide-show> element
+					// Create shadow root and put <template> into <slide-show>
 					this.createShadowRoot().appendChild(clone);
 				}
 			},
@@ -30,21 +37,21 @@
 			attachedCallback: {
 				value: function(){
 					// fires when injected into the document
-					console.log(this);
+					//console.log(this);
 				}
 			},
 
 			detachedCallback: {
 				value: function(){
 					// fires when removed from the document
-					console.log(this);
+					//console.log(this);
 				}
 			},
 
 			attributeChangedCallback: {
-				value: function(){
+				value: function(attrName, oldVal, newVal){
 					// fires when an attribute is added, removed, or changed.
-					console.log(this);
+					//console.log(attrName, oldVal, newVal);
 				}
 			},
 
@@ -60,12 +67,19 @@
 				}
 			}
 		})
-
 	};
 
-	// Register slide-show element with a default prototype and extending an existing element
+
+	// Define a READ-ONLY property 'speed'
+	// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+	Object.defineProperty(mySlideShow.slideshowPrototype, 'speed', {value: 500});
+
+
+	//Register slide-show element with a default prototype and extending an existing element
 	document.registerElement('slide-show', {
-		prototype: myApp.slideshowPrototype
+		prototype: mySlideShow.slideshowPrototype,
+		// use extends for: <div is="slide-show"></div>
+		// extends: 'div'
 	});
 
 </script>

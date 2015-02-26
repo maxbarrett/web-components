@@ -3,10 +3,30 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<link rel="import" href="slide_show.html"></link>
+	<link rel="import" href="mega_button.html"></link>
+
+	<style>
+	 	[is="mega-button"] { border-color:green; margin:0 auto; display:block; }
+	</style>
+
 </head>
 <body>
 
 	<slide-show>A list of images...</slide-show>
+
+	<br>
+
+	<div class="outer">Testing the shadow dom</div>
+
+	<br>
+
+	<button is="mega-button">I'm a mega button</button>
+
+
+<script>
+	console.log(window.myButton);
+	console.log(window.mySlideShow);
+</script>
 
 </body>
 </html>
