@@ -97,22 +97,19 @@ Taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcomponents/te
 
 
 ## Shadow DOM
-Give an element a shadow root:
+Browser support test for Shadow DOM:
 ```sh
-var elem = document.querySelector('.myElement').createShadowRoot();
+function supportsShadowDom() {
+	return !!HTMLElement.prototype.createShadowRoot;
+}
 ```
-The element's content will then be hidden as the DOM subtree is encapsulated.
-
-Shadow DOM ecapsulation is ideal to store presentation details.
-
-To create a shadow root for an element:
-
+To give a document element a shadow root:
 ```sh
 var shadow = document.querySelector('.myElement').createShadowRoot();
 ```
-Then simply clone a `<template>` into the shadow root, as shown above.
+That element's DOM subtree is then encapsulated/hidden.
 
-Content from the shadow host is presented in the `<template>`'s `<content>` element.
+If a `<template>` is cloned into the shadow root element the encapsulated subtree can be projected through the `<template>`'s `<content>` element:
 
 ```sh
 <template id="template">
@@ -121,12 +118,14 @@ Content from the shadow host is presented in the `<template>`'s `<content>` elem
 	</style>
 	Hi, my name is: 
 	<div class="name">
-		<content></content>
+		<content><!-- .myElement subtree appears here --></content>
 	</div>
 </template>
 ```
 
-The `select` attribute can control what a `content` element projects. There can be multiple `content` elements:
+Markup, CSS & JS outside of the `<content>` tags are an ideal place to store presentation details.
+
+The `select` attribute can control what a `content` element projects, there can be multiple.
 
 If you have a document containing:
 ```sh
@@ -135,7 +134,7 @@ If you have a document containing:
 <div class="email">max@max.com</div>
 ```
 
-and a shadow root which uses CSS selectors to select specific content:
+and a shadow root using CSS selectors to select specific content:
 ```sh
 <div style="color: red;">
 	<content select=".first"></content>
@@ -147,11 +146,32 @@ and a shadow root which uses CSS selectors to select specific content:
 	<content select=".email"></content>
 </div>
 ```
-`Max` will be red but both `Barrett` & `max@max.com` will be yellow – Elements are projected on first match, not specificity (like CSS). As `div` is matched before `.email`.
 
-`select` can only select elements which are immediate children of the host node. You cannot select descendants (e.g.select="table tr").
+`Max` will be red but both `Barrett` & `max@max.com` will be yellow – Elements are projected on first match, not specificity (like CSS). As `div` is matched before `.email` the email address is yellow, not blue.
+
+`select` can only select elements which are immediate children of the host node. Descendants cannot be selected e.g.select="table tr".
 
 If there is no match, the content will be hidden/encapsulated inside the shadow root.
+
+
+`:host` allows you to select and style the element hosting a shadow tree.
+
+Rules in the parent page have higher specificity than `:host` rules defined in the element, but lower specificity than a style attribute defined on the host element.
+
+```sh
+:host(<selector>) {
+	... 
+}
+
+:host(:hover) {
+	...
+}
+
+// matches the host element if it or any of its ancestors matches <selector>
+:host-context(<selector>) {
+	...
+}
+```
 
 
 Use multiple shadow on one shadow host
