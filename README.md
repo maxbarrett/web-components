@@ -1,12 +1,12 @@
 # Native web components - no polyfills
 
 To get the HTML imports working in the browser we need an HTTP server running:
-```javascript
+```sh
 python -m SimpleHTTPServer
 ```
 
 View index.html at:
-```javascript
+```sh
 http://localhost:8000
 ```
 
@@ -24,7 +24,7 @@ function supportsImports() {
 ```
 
 An import link tells the browser to fetch the document for use later. Recommended to put in `<head>`:
-```javascript
+```html
 <link rel="import" href="/path/to/import.html">
 ```
 
@@ -50,7 +50,7 @@ Scripts inside imports are processed in order, giving defer-like behavior with p
 Imports do block rendering of the main page, similar to `<link rel="stylesheet">` to minimize FOUC.
 
 To be completely asynchronous (not block the parser or rendering) use `async` attribute:
-```javascript
+```html
 <link rel="import" href="/path/to/large/import.html" async>
 ```
 
@@ -128,14 +128,14 @@ Markup, CSS & JS outside of the `<content>` tags are an ideal place to store pre
 The `select` attribute can control what a `content` element projects, there can be multiple.
 
 If you have a document containing:
-```javascript
+```html
 <div class="first">Max</div>
 <div>Barrett</div>
 <div class="email">max@max.com</div>
 ```
 
 and a shadow root using CSS selectors to select specific content:
-```javascript
+```html
 <div style="color: red;">
 	<content select=".first"></content>
 </div>
@@ -158,7 +158,7 @@ If there is no match, the content will be hidden/encapsulated inside the shadow 
 
 Rules in the parent page have higher specificity than `:host` rules defined in the element, but lower specificity than a style attribute defined on the host element.
 
-```javascript
+```css
 :host(<selector>) {
 	... 
 }
