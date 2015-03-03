@@ -1,12 +1,12 @@
 # Native web components - no polyfills
 
 To get the HTML imports working in the browser we need an HTTP server running:
-```sh
+```javascript
 python -m SimpleHTTPServer
 ```
 
 View index.html at:
-```sh
+```javascript
 http://localhost:8000
 ```
 
@@ -17,19 +17,19 @@ http://localhost:8000
 ## HTML Imports
 
 Browser support test for HTML imports:
-```sh
+```javascript
 function supportsImports() {
   return 'import' in document.createElement('link');
 }
 ```
 
 An import link tells the browser to fetch the document for use later. Recommended to put in `<head>`:
-```sh
+```javascript
 <link rel="import" href="/path/to/import.html">
 ```
 
 To access the content of an import, use the link element's `.import` property:
-```sh
+```javascript
 var content = document.querySelector('link[rel="import"]').import;
 ```
 
@@ -50,7 +50,7 @@ Scripts inside imports are processed in order, giving defer-like behavior with p
 Imports do block rendering of the main page, similar to `<link rel="stylesheet">` to minimize FOUC.
 
 To be completely asynchronous (not block the parser or rendering) use `async` attribute:
-```sh
+```javascript
 <link rel="import" href="/path/to/large/import.html" async>
 ```
 
@@ -69,14 +69,14 @@ Notes taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcompone
 ## HTML `<template>` tag
 
 Browser support test for HTML templates:
-```sh
+```javascript
 function supportsTemplate() {
 	return 'content' in document.createElement('template');
 }
 ```
 
 Content is inert until activated - scripts don't run, images don't load & audio doesn't play until the template is cloned into the main document:
-```sh
+```javascript
 var temp = document.querySelector('#mytemplate');
 var clone = document.importNode(temp.content, true); // a deep clone
 document.body.appendChild(clone);
@@ -98,20 +98,20 @@ Taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcomponents/te
 
 ## Shadow DOM
 Browser support test for Shadow DOM:
-```sh
+```javascript
 function supportsShadowDom() {
 	return !!HTMLElement.prototype.createShadowRoot;
 }
 ```
 To give a document element a shadow root:
-```sh
+```javascript
 var shadow = document.querySelector('.myElement').createShadowRoot();
 ```
 That element's DOM subtree is then encapsulated/hidden.
 
 If a `<template>` is cloned into the shadow root element the encapsulated subtree can be projected through the `<template>`'s `<content>` element:
 
-```sh
+```javascript
 <template id="template">
 	<style>
 		…
@@ -128,14 +128,14 @@ Markup, CSS & JS outside of the `<content>` tags are an ideal place to store pre
 The `select` attribute can control what a `content` element projects, there can be multiple.
 
 If you have a document containing:
-```sh
+```javascript
 <div class="first">Max</div>
 <div>Barrett</div>
 <div class="email">max@max.com</div>
 ```
 
 and a shadow root using CSS selectors to select specific content:
-```sh
+```javascript
 <div style="color: red;">
 	<content select=".first"></content>
 </div>
@@ -158,7 +158,7 @@ If there is no match, the content will be hidden/encapsulated inside the shadow 
 
 Rules in the parent page have higher specificity than `:host` rules defined in the element, but lower specificity than a style attribute defined on the host element.
 
-```sh
+```javascript
 :host(<selector>) {
 	... 
 }
