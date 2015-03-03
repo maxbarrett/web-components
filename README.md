@@ -2,15 +2,19 @@
 
 To get the HTML imports working in the browser we need an HTTP server running:
 ```sh
-	python -m SimpleHTTPServer;
+python -m SimpleHTTPServer;
 ```
 
 View index.html at:
 ```sh
-	http://localhost:8000
+http://localhost:8000
 ```
 
-### HTML Imports
+
+
+
+
+## HTML Imports
 
 Browser support test for HTML imports:
 ```sh
@@ -19,14 +23,21 @@ function supportsImports() {
 }
 ```
 
-An import link tells the browser to fetch the document for use later – put them in the `<head>`:
+An import link tells the browser to fetch the document for use later. Recommended to put in `<head>`:
 ```sh
-	<link rel="import" href="/path/to/imports/stuff.html">
+<link rel="import" href="/path/to/imports/stuff.html">
 ```
 
-Imports from the same URL are retrieved and parsed once. So the script in an import is only executed the first time.
+To access the content of an import, use the link element's `.import` property:
+```sh
+var content = document.querySelector('link[rel="import"]').import;
+```
 
-While scripts execute at import time, stylesheets, markup, and other resources need to be added to the main page explicitly. 
+Imports from the same URL are retrieved and parsed once, hence an import's script is only executed the first time.
+
+Scripts execute at import time, unless you wrap them in a `<template>` tag, then they run when added to the DOM.
+
+Stylesheets, markup, and other resources need to be added to the main page explicitly. 
 
 An import can access its own DOM and/or the DOM of the page that's importing it.
 
@@ -34,15 +45,13 @@ Javascript in the import shares the window of the importing document – window.
 
 Imports do not block parsing of the main page, the browser can parallelise HTML parsing.
 
-Scripts inside imports are processed in order – defer-like behavior while maintaining proper script order
+Scripts inside imports are processed in order, giving defer-like behavior with proper script order.
 
 Imports do block rendering of the main page, similar to `<link rel="stylesheet">` to minimize FOUC.
 
-Wrapping content in a `<template>` makes content inert until used – scripts don't run until the template is added to the DOM.
-
-To be completely asynchronous (not block the parser or rendering) use the `async` attribute:
+To be completely asynchronous (not block the parser or rendering) use `async` attribute:
 ```sh
-	<link rel="import" href="/path/to/import_that_takes_5secs.html" async>
+<link rel="import" href="/path/to/import_that_takes_5secs.html" async>
 ```
 
 [Vulcanize](https://github.com/Polymer/vulcanize) is an npm build tool that recursively flattens a set of HTML Imports into a single file - a concatenation build step for Web Components.
@@ -57,32 +66,27 @@ Notes taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcompone
 
 
 
-### HTML `<template>` tag
+## HTML `<template>` tag
 
 Browser support test for HTML templates:
 ```sh
-	function supportsTemplate() {
-		return 'content' in document.createElement('template');
-	}
+function supportsTemplate() {
+	return 'content' in document.createElement('template');
+}
 ```
 
-
-Content is effectively inert until activated
-
-Script doesn't run, images don't load, audio doesn't play until the template is used
-
-Content is considered not to be in the document
-
-Templates can be placed anywhere inside of `<head>`, `<body>`, or `<frameset>`
-
-To use a template, clone it into the document
+Content is inert until activated - scripts don't run, images don't load & audio doesn't play until the template is cloned into the main document:
 ```sh
-	var t = document.querySelector('#mytemplate');
-	var clone = document.importNode(t.content, true);
-	document.body.appendChild(clone);
+var temp = document.querySelector('#mytemplate');
+var clone = document.importNode(temp.content, true); // a deep clone
+document.body.appendChild(clone);
 ```
 
-Outer templates will not activate inner templates. Nested templates require that their children also be manually activated.
+Best to append template content to a shadow root.
+
+There's no way to 'preload' assets of a template for both server and client.
+
+Outer templates will not activate inner templates – Nested templates require their children to also be manually activated.
 
 Taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcomponents/template/)
 
@@ -92,7 +96,19 @@ Taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcomponents/te
 
 
 
-### Custom elements
+## Shadow DOM
+
+
+
+Taken from HTML5 Rocks [[1](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/)], [[2](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom-201/)], [[3](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom-301/)]
+
+
+
+
+## Custom elements
+
+Auto register custom-elements.
+
 
 createdCallback - fires when an instance of the element is created
 attachedCallback - fires when injected into the document
@@ -100,13 +116,3 @@ detachedCallback - fires when removed from the document
 attributeChangedCallback - fires when an attribute is added, removed, or changed
 
 Taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/)
-
-
-
-### Shadow DOM
-
-http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/
-
-http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom-201/
-
-http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom-301/
