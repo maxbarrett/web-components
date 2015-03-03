@@ -111,7 +111,7 @@ That element's DOM subtree is then encapsulated/hidden.
 
 If a `<template>` is cloned into the shadow root element the encapsulated subtree can be projected through the `<template>`'s `<content>` element:
 
-```javascript
+```html
 <template id="template">
 	<style>
 		…
