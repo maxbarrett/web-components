@@ -4,11 +4,14 @@
 	<link rel="stylesheet" type="text/css" href="styles.css">
 	<link rel="import" href="slide_show.html"></link>
 	<link rel="import" href="mega_button.html"></link>
+	<link rel="import" href="name_tag.html"></link>
 
 	<style>
 		/*These styles override :host styles in template*/
 	 	[is="mega-button"] { border-color:green; }
 	 	:unresolved { opacity:0.5; }
+
+	 	#test {border:1px solid red;}
 	</style>
 
 </head>
@@ -20,15 +23,26 @@
 
 	<button is="mega-button">I'm a mega button</button>
 
+	<div id="nameTag">Max</div>
+
+
 <script>
 	console.log(window.myButton);
 	console.log(window.mySlideShow);
 
-	// Access the public API
+	// Access the slide-show public API
 	var ss = document.querySelector('slide-show');
 	// ss.next();
 
+
+
+	var shadow = document.querySelector('#nameTag').createShadowRoot(); // Create shadow root 
+	var imprt = document.querySelector('link[href="name_tag.html"]').import // Grab the import
+	var template = imprt.querySelector('#template'); // The import's <template> element
+	var clone = document.importNode(template.content, true); // Clone it
+	shadow.appendChild(clone); // add it to the shadow root
 </script>
+
 
 </body>
 </html>
