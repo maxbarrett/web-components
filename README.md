@@ -2,7 +2,7 @@
 
 To get the HTML imports working in the browser we need an HTTP server running:
 ```sh
-python -m SimpleHTTPServer;
+python -m SimpleHTTPServer
 ```
 
 View index.html at:
