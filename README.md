@@ -9,44 +9,44 @@ python -m SimpleHTTPServer
 ##HTML Imports
 ```javascript
 function supportsImports() {
-  return 'import' in document.createElement('link');
+	return 'import' in document.createElement('link');
 }
 ```
 
-An import link tells the browser to fetch the document for use later. Recommended to put in `<head>`:
+An import link tells the browser to fetch the document for use later – put in `<head>`
 ```html
 <link rel="import" href="/path/to/import.html">
 ```
 
-To access the content of an import, use the link element's `.import` property:
+Use `.import` property to access content:
 ```javascript
 var content = document.querySelector('link[rel="import"]').import;
 ```
 
-Imports from the same URL are retrieved and parsed once, hence an import's script is only executed the first time.
+Imports from the same URL are retrieved and parsed once.
 
-Scripts execute at import time, unless you wrap them in a `<template>` tag, then they run when added to the DOM.
+Scripts execute at import time, unless they are wrapped in `<template>`, then they run when added to the DOM.
 
 Stylesheets, markup, and other resources need to be added to the main page explicitly. 
 
-An import can access its own DOM and/or the DOM of the page that's importing it.
+An import can access its own DOM and the DOM of the importing page.
 
-Javascript in the import shares the window of the importing document – window.document refers to the main page.
+`window.document` refers to the importing page.
 
-Imports do not block parsing of the main page, the browser can parallelise HTML parsing.
+Imports do not block parsing of the main page – browser parallelises HTML parsing.
 
-Scripts inside imports are processed in order, giving defer-like behavior with proper script order.
+Scripts inside imports are processed in order – defer-like behavior with proper script order.
 
-Imports do block rendering of the main page, similar to `<link rel="stylesheet">` to minimize FOUC.
+Imports block rendering of the main page – similar to `<link rel="stylesheet">` to minimize FOUC.
 
-To be completely asynchronous (not block the parser or rendering) use `async` attribute:
+Use `async` attribute to not block rendering.
 ```html
 <link rel="import" href="/path/to/large/import.html" async>
 ```
 
-[Vulcanize](https://github.com/Polymer/vulcanize) is an npm build tool that recursively flattens a set of HTML Imports into a single file - a concatenation build step for Web Components.
+[Vulcanize](https://github.com/Polymer/vulcanize) recursively flattens imports into a single file.
 
-To load content from another domain the import location needs to be CORS-enabled.
+Imports from another domain need to be CORS-enabled.
 
 Notes taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcomponents/imports/)
 
@@ -63,19 +63,18 @@ function supportsTemplate() {
 }
 ```
 
-Content is inert until activated - scripts don't run, images don't load & audio doesn't play until the template is cloned into the main document:
+Content – scripts/images/audio – inert until template is cloned into main document:
 ```javascript
 var temp = document.querySelector('#mytemplate');
 var clone = document.importNode(temp.content, true); // a deep clone
 document.body.appendChild(clone);
 ```
 
-(Best practice to append template content to a shadow root) TODO?
-Markup, CSS & JS outside of the `<content>` tags are an ideal place to store presentation details.
-
 There's no way to 'preload' assets of a template for both server and client.
 
 Outer templates will not activate inner templates – each must be manually activated individially.
+
+Common to append the template content to a shadow root, see below.
 
 Taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcomponents/template/)
 
@@ -92,15 +91,16 @@ function supportsShadowDom() {
 }
 ```
 
-Give an element a shadow root to encapsulate it's DOM subtree:
+Give an element a shadow root and encapsulate it's DOM subtree:
 ```javascript
 var shadow = document.querySelector('.myElement').createShadowRoot();
 ```
 
-Cloning a `<template>` (method above) into a shadow root element projects that element's DOM subtree through the `<content>` tag:
+Cloning a `<template>` (as above) into an element's shadow root projects that element's DOM subtree through the `<content>` tag:
 
 ```html
 <template id="template">
+	<!-- Store presentation details outside of the `<content>` tags. -->
 	<style>
 		…
 	</style>
@@ -111,9 +111,7 @@ Cloning a `<template>` (method above) into a shadow root element projects that e
 </template>
 ```
 
-The subtree retains styles from the main document but can also be styled from inside the shadow tree using the ::content pseudo element.
-
-The `content` element has a `select` attribute that can control what is projected:
+It has a `select` attribute that can select immediate children of the host node to control what is projected:
 
 Document:
 ```html
@@ -137,11 +135,13 @@ Shadow root using CSS selectors:
 
 `Max` = red
 `Barrett` & `max@max.com` = yellow
-Elements are projected on first match, not by specificity like CSS.
+Elements are projected on first match, not specificity like CSS.
 
-`select` can only select immediate children of the host node. Descendants cannot be selected eg: select="table tr".
+Descendants cannot be selected eg: `select="table tr"`.
 
-If there is no match, the content will be hidden/encapsulated inside the shadow root.
+The projected subtree retains styles from the main document and can also be styled from inside the shadow tree using the `::content` pseudo element.
+
+If there is no match, the content will be hidden inside the shadow root.
 
 Rules in the parent page have higher specificity than `:host` rules defined in the element, but lower specificity than a style attribute defined on the host element.
 
@@ -156,7 +156,7 @@ Rules in the parent page have higher specificity than `:host` rules defined in t
 	...
 }
 
-// styling shadow DOM from outside:
+// styling shadow tree from outside:
 #myId::shadow span { color: red; }
 
 // /deep/ ignores all shadow boundaries – when nesting custom elements:
@@ -165,7 +165,7 @@ tab-group /deep/ tab-panel {
 }
 ```
 
-Accessing deep shadow DOM elements with JavaScript:
+Accessing deep shadow tree elements with JavaScript:
 ```javascript
 // One way:
 document.querySelector('x-tabs').shadowRoot
