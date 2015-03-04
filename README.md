@@ -39,7 +39,7 @@ Scripts inside imports are processed in order – defer-like behavior with prope
 
 Imports block rendering of the main page – similar to `<link rel="stylesheet">` to minimize FOUC.
 
-Use `async` attribute to not block rendering.
+Use `async` attribute to not block rendering:
 ```html
 <link rel="import" href="/path/to/large/import.html" async>
 ```
@@ -63,18 +63,18 @@ function supportsTemplate() {
 }
 ```
 
-Content – scripts/images/audio – inert until template is cloned into main document:
+Content – scripts/images/audio – are inert until template is cloned into main document:
 ```javascript
 var temp = document.querySelector('#mytemplate');
 var clone = document.importNode(temp.content, true); // a deep clone
 document.body.appendChild(clone);
 ```
 
-There's no way to 'preload' assets of a template for both server and client.
+No way to 'preload' `<template>` assets – for both server and client.
 
-Outer templates will not activate inner templates – each must be manually activated individially.
+Outer templates do not activate inner templates – each must be manually activated individially.
 
-Common to append the template content to a shadow root, see below.
+A template's content is often cloned into a shadow root, see below.
 
 Taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcomponents/template/)
 
@@ -111,7 +111,7 @@ Cloning a `<template>` (as above) into an element's shadow root projects that el
 </template>
 ```
 
-It has a `select` attribute that can select immediate children of the host node to control what is projected:
+`<template>` has a `select` attribute that can select immediate children of the host node to control what is projected:
 
 Document:
 ```html
@@ -133,15 +133,15 @@ Shadow root using CSS selectors:
 </div>
 ```
 
-`Max` = red
-`Barrett` & `max@max.com` = yellow
+`Max` = red `Barrett` & `max@max.com` = yellow.
+
 Elements are projected on first match, not specificity like CSS.
 
-Descendants cannot be selected eg: `select="table tr"`.
+Descendants cannot be selected eg: `select="table tr"`
 
-The projected subtree retains styles from the main document and can also be styled from inside the shadow tree using the `::content` pseudo element.
+Projected subtree retains styles from the main document and can also be styled from inside the shadow tree using the `::content` pseudo element.
 
-If there is no match, the content will be hidden inside the shadow root.
+If there is no `<content>` or `select` match, the subtree will be hidden inside the shadow root.
 
 Rules in the parent page have higher specificity than `:host` rules defined in the element, but lower specificity than a style attribute defined on the host element.
 
@@ -159,7 +159,7 @@ Rules in the parent page have higher specificity than `:host` rules defined in t
 // styling shadow tree from outside:
 #myId::shadow span { color: red; }
 
-// /deep/ ignores all shadow boundaries – when nesting custom elements:
+// /deep/ ignores all shadow boundaries – used when nesting custom elements:
 tab-group /deep/ tab-panel {
   ...
 }
@@ -168,9 +168,9 @@ tab-group /deep/ tab-panel {
 Accessing deep shadow tree elements with JavaScript:
 ```javascript
 // One way:
-document.querySelector('x-tabs').shadowRoot
-        .querySelector('x-panel').shadowRoot
-        .querySelector('#foo');
+document.querySelector('tab-group').shadowRoot
+        .querySelector('tab-panel').shadowRoot
+        .querySelector('.elem');
 
 // Better way:
 document.querySelector('tab-group::shadow tab-panel::shadow .elem');
