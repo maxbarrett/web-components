@@ -1,22 +1,12 @@
-# Native web components - no polyfills
+#Native web components - no polyfills
 
-To get the HTML imports working in the browser we need an HTTP server running:
+Get an HTTP server running at `http://localhost:8000`
 ```sh
 python -m SimpleHTTPServer
 ```
 
-View index.html at:
-```sh
-http://localhost:8000
-```
 
-
-
-
-
-## HTML Imports
-
-Browser support test for HTML imports:
+##HTML Imports
 ```javascript
 function supportsImports() {
   return 'import' in document.createElement('link');
@@ -67,8 +57,6 @@ Notes taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcompone
 
 
 ## HTML `<template>` tag
-
-Browser support test for HTML templates:
 ```javascript
 function supportsTemplate() {
 	return 'content' in document.createElement('template');
@@ -82,7 +70,8 @@ var clone = document.importNode(temp.content, true); // a deep clone
 document.body.appendChild(clone);
 ```
 
-Best practice to append template content to a shadow root.
+(Best practice to append template content to a shadow root) TODO?
+Markup, CSS & JS outside of the `<content>` tags are an ideal place to store presentation details.
 
 There's no way to 'preload' assets of a template for both server and client.
 
@@ -97,19 +86,18 @@ Taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcomponents/te
 
 
 ## Shadow DOM
-Browser support test for Shadow DOM:
 ```javascript
 function supportsShadowDom() {
 	return !!HTMLElement.prototype.createShadowRoot;
 }
 ```
-To give a document element a shadow root:
+
+Give an element a shadow root to encapsulate it's DOM subtree:
 ```javascript
 var shadow = document.querySelector('.myElement').createShadowRoot();
 ```
-That element's DOM subtree is then encapsulated/hidden.
 
-If a `<template>` is cloned into the shadow root element the encapsulated subtree can be projected through the `<template>`'s `<content>` element:
+Cloning a `<template>` (method above) into a shadow root element projects that element's DOM subtree through the `<content>` tag:
 
 ```html
 <template id="template">
@@ -123,18 +111,18 @@ If a `<template>` is cloned into the shadow root element the encapsulated subtre
 </template>
 ```
 
-Markup, CSS & JS outside of the `<content>` tags are an ideal place to store presentation details.
+The subtree retains styles from the main document but can also be styled from inside the shadow tree using the ::content pseudo element.
 
-The `select` attribute can control what a `content` element projects, there can be multiple.
+The `content` element has a `select` attribute that can control what is projected:
 
-If you have a document containing:
+Document:
 ```html
 <div class="first">Max</div>
 <div>Barrett</div>
 <div class="email">max@max.com</div>
 ```
 
-and a shadow root using CSS selectors to select specific content:
+Shadow root using CSS selectors:
 ```html
 <div style="color: red;">
 	<content select=".first"></content>
@@ -147,37 +135,46 @@ and a shadow root using CSS selectors to select specific content:
 </div>
 ```
 
-`Max` will be red but both `Barrett` & `max@max.com` will be yellow – Elements are projected on first match, not specificity (like CSS). As `div` is matched before `.email` the email address is yellow, not blue.
+`Max` = red
+`Barrett` & `max@max.com` = yellow
+Elements are projected on first match, not by specificity like CSS.
 
-`select` can only select elements which are immediate children of the host node. Descendants cannot be selected e.g.select="table tr".
+`select` can only select immediate children of the host node. Descendants cannot be selected eg: select="table tr".
 
 If there is no match, the content will be hidden/encapsulated inside the shadow root.
 
-
-`:host` allows you to select and style the element hosting a shadow tree.
-
 Rules in the parent page have higher specificity than `:host` rules defined in the element, but lower specificity than a style attribute defined on the host element.
 
-```css
+```sass
+// style the element hosting a shadow tree.
 :host(<selector>) {
 	... 
-}
-
-:host(:hover) {
-	...
 }
 
 // matches the host element if it or any of its ancestors matches <selector>
 :host-context(<selector>) {
 	...
 }
+
+// styling shadow DOM from outside:
+#myId::shadow span { color: red; }
+
+// /deep/ ignores all shadow boundaries – when nesting custom elements:
+tab-group /deep/ tab-panel {
+  ...
+}
 ```
 
+Accessing deep shadow DOM elements with JavaScript:
+```javascript
+// One way:
+document.querySelector('x-tabs').shadowRoot
+        .querySelector('x-panel').shadowRoot
+        .querySelector('#foo');
 
-Use multiple shadow on one shadow host
-Use nested shadows for encapsulation
-Architect your page using Model-Driven Views (MDV) and Shadow DOM
-
+// Better way:
+document.querySelector('tab-group::shadow tab-panel::shadow .elem');
+```
 
 
 Taken from HTML5 Rocks [[1](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom/)], [[2](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom-201/)] & [[3](http://www.html5rocks.com/en/tutorials/webcomponents/shadowdom-301/)]
