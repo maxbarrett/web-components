@@ -8,11 +8,11 @@
 
 	<style>
 		/*These styles override :host styles in template*/
-	 	[is="mega-button"] { border-color:green; }
+	 	[is="mega-button"] { border-color:yellow; }
 	 	:unresolved { opacity:0.5; }
 
 	 	/* Styling shadow dom elements from outside the encapsulation */
-	 	#nameTag::shadow span { color: red; }
+	 	#nameTag::shadow span { color: yellow; }
 
 	 	button { display:block; }
 	</style>
@@ -20,9 +20,8 @@
 </head>
 <body>
 
-	<slide-show>A list of images...</slide-show>
-	<div class="outer">Testing the shadow dom, no styles added to .outer class</div>
-	<unres-elem>An unresolved element</unres-elem>
+	<slide-show>List of images...</slide-show>
+	<unres-elem>Unresolved element</unres-elem>
 	<button is="mega-button">created using html markup</button>
 	<div id="nameTag">Max</div>
 

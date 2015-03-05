@@ -261,8 +261,6 @@ Instantiating type extension custom elements:
 document.createElement('button', 'mega-button');
 ```
 
-
-
 ```sass
 // Styling unresolved custom elements, before createdCallback() is called:
 :unresolved {}
