@@ -12,18 +12,25 @@
 
 <script>
 
-var mySlideShow = {
+var importDoc = document.currentScript.ownerDocument;
 
-	importDoc: document.currentScript.ownerDocument,
+// Define a READ-ONLY property 'speed'
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+// Object.defineProperty(mySlideShow.slideshowPrototype, 'speed', {value: 500});
 
-	slideshowPrototype : Object.create(HTMLElement.prototype, {
+
+//Register slide-show element
+document.registerElement('slide-show', {
+
+	// use default prototype
+	prototype: Object.create(HTMLElement.prototype, {
+
 		// When using Object.create properties must use 'value'
 		// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/create
-
 		createdCallback: {
 			value: function(){
 				// grab <template> above
-				var template = mySlideShow.importDoc.querySelector('#slideShow');
+				var template = importDoc.querySelector('#slideShow');
 
 				// https://developer.mozilla.org/en-US/docs/Web/API/Document/importNode
 				var clone = document.importNode(template.content, true);
@@ -74,18 +81,6 @@ var mySlideShow = {
 			}
 		}
 	})
-};
-
-// Define a READ-ONLY property 'speed'
-// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
-Object.defineProperty(mySlideShow.slideshowPrototype, 'speed', {value: 500});
-
-
-//Register slide-show element with a default prototype
-document.registerElement('slide-show', {
-	prototype: mySlideShow.slideshowPrototype,
-	// use extends for: <div is="slide-show"></div>
-	// extends: 'div'
 });
 
 </script>

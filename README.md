@@ -187,7 +187,34 @@ Taken from HTML5 Rocks [[1](http://www.html5rocks.com/en/tutorials/webcomponents
 
 
 
-## Custom elements
+##Custom elements
+
+Register a new element:
+```javascript
+var MyCustomElement = document.registerElement('my-element');
+
+```
+
+Instantiating custom elements:
+```html
+<my-element></my-element>
+```
+
+```javascript
+// Create DOM in JS:
+var myElem = document.createElement('my-element');
+
+// Or use the new operator:
+document.body.appendChild(new MyCustomElement());
+```
+
+Type extension-style custom elements:
+```html
+<button is="mega-button">
+```
+
+
+
 
 Auto register custom-elements.
 
