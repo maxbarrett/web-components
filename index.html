@@ -11,33 +11,25 @@
 	 	[is="mega-button"] { border-color:green; }
 	 	:unresolved { opacity:0.5; }
 
-	 	#test {border:1px solid red;}
-
 	 	/* Styling shadow dom elements from outside the encapsulation */
 	 	#nameTag::shadow span { color: red; }
+
+	 	button { display:block; }
 	</style>
 
 </head>
 <body>
 
 	<slide-show>A list of images...</slide-show>
-
 	<div class="outer">Testing the shadow dom, no styles added to .outer class</div>
-
-	<button is="mega-button">I'm a mega button</button>
-
+	<unres-elem>An unresolved element</unres-elem>
+	<button is="mega-button">created using html markup</button>
 	<div id="nameTag">Max</div>
 
-
 <script>
-	console.log(window.myButton);
-	console.log(window.mySlideShow);
-
-	// Access the slide-show public API
 	var ss = document.querySelector('slide-show');
+	// slide-show public API
 	// ss.next();
-
-
 
 	var shadow = document.querySelector('#nameTag').createShadowRoot(); // Create shadow root 
 	var imprt = document.querySelector('link[href="name_tag.html"]').import // Grab the import

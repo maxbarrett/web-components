@@ -188,11 +188,15 @@ Taken from HTML5 Rocks [[1](http://www.html5rocks.com/en/tutorials/webcomponents
 
 
 ##Custom elements
+```javascript
+function supportsCustomElements() {
+	return 'registerElement' in document;
+}
+```
 
 Register a new element:
 ```javascript
 var MyCustomElement = document.registerElement('my-element');
-
 ```
 
 Instantiating custom elements:
@@ -208,19 +212,64 @@ var myElem = document.createElement('my-element');
 document.body.appendChild(new MyCustomElement());
 ```
 
-Type extension-style custom elements:
+Register a custom element, set it's prototype, give it a shadow, insert template & establish lifecycle callback methods:
+```javascript
+(function(){
+	var importDoc = document.currentScript.ownerDocument;
+	var slideShow = document.registerElement('slide-show', {
+
+		// use default prototype
+		prototype: Object.create(HTMLElement.prototype, {
+
+			createdCallback: {
+				value: function(){
+					var template = importDoc.querySelector('#slideShow'); // grab <template> above
+					var clone = document.importNode(template.content, true); // clone it
+					this.createShadowRoot().appendChild(clone); // Give <slide-show> a shadow root & insert <template>
+				}
+			},
+
+			attachedCallback: {
+				value: function(){
+					// fires when added to document
+				}
+			},
+
+			detachedCallback: {
+				value: function(){
+					// fires when removed from document
+				}
+			},
+
+			attributeChangedCallback: {
+				value: function(attrName, oldVal, newVal){
+					// fires when an attribute is added, removed, or changed.
+				}
+			}
+		})
+	});
+})();
+```
+
+
+Instantiating type extension custom elements:
 ```html
 <button is="mega-button">
 ```
 
+```javascript
+document.createElement('button', 'mega-button');
+```
 
+
+
+```sass
+// Styling unresolved custom elements, before createdCallback() is called:
+:unresolved {}
+```
 
 
 Auto register custom-elements.
 
-createdCallback - fires when an instance of the element is created
-attachedCallback - fires when injected into the document
-detachedCallback - fires when removed from the document
-attributeChangedCallback - fires when an attribute is added, removed, or changed
 
 Taken from [HTML5 Rocks](http://www.html5rocks.com/en/tutorials/webcomponents/customelements/)
