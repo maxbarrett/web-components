@@ -1,5 +1,7 @@
 #Native web components - no polyfills
 
+[Demo](http://maxbarrett.github.io/web-components/)
+
 Get an HTTP server running at `http://localhost:8000`
 ```sh
 python -m SimpleHTTPServer
