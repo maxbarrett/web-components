@@ -13,20 +13,26 @@
 
 	 	/* Styling shadow dom elements from outside the encapsulation */
 	 	#nameTag::shadow span { color: yellow; }
-
 	 	button { display:block; }
+	 	slide-show { display:block; }
 	</style>
 
 </head>
 <body>
 
-	<slide-show>List of images...</slide-show>
+	<slide-show>
+		<img src="img/slide1.jpg" alt="Slide 1">
+		<img src="img/slide2.jpg" alt="Slide 2">
+		<img src="img/slide3.jpg" alt="Slide 3">
+		<img src="img/slide4.jpg" alt="Slide 4">
+	</slide-show>
+
+
 	<unres-elem>Unresolved element</unres-elem>
 	<button is="mega-button">created using html markup</button>
 	<div id="nameTag">Max</div>
 
 <script>
-	var ss = document.querySelector('slide-show');
 	// slide-show public API
 	// ss.next();
 
