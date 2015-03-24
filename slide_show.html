@@ -1,27 +1,14 @@
 <template id="slideShow">
 	<style>
-		/* Carousel */
-		:host { display:block; }
-		.outer { overflow:hidden; position: relative; border-radius:5px; border: 1px solid gray; box-sizing:border-box; }
-		::content { position:relative; list-style: none; width: 2000%; margin: 0; overflow: hidden; max-height: 272px; -webkit-perspective: 1000;}
-		::content img { display:block; float: left; width: 100%; max-width:600px; position: relative; }
-
-		::content .slider-previous,
-		::content .slider-next { background-color:gray; background-repeat: no-repeat; background-position: 50% 50%; position: absolute; top:0; display: block; width: 66px; min-width: 30px; bottom:0; cursor: pointer; text-indent: -9999em; z-index: 10; .transition(background-color 0.2s); }
-		::content .slider-previous { background-image: url('//static.vouchercodes.co.uk/v10/images/homepage/carousel-arrow-left.png'); left:0; border-right: 1px solid gray; }
-		::content .slider-next { background-image: url('//static.vouchercodes.co.uk/v10/images/homepage/carousel-arrow-right.png'); right:0; border-left: 1px solid gray; }
+		.outer { width:30%; margin:20px 0; padding:20px; text-align:center; border:1px solid DarkSlateGray; background:SlateGray; }
 	</style>
 
 	<div class="outer">
-		<a id="js-slider-previous" class="slider-previous slider-button">previous</a>
 		<content>
 			<!-- Content between <slide-show>...</slide-show> tags will appear here -->
 		</content>
-		<a id="js-slider-next" class="slider-next slider-button">next</a>
 	</div>
 </template>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
 <script>
 // EXAMPLE: standard custom element:
@@ -42,124 +29,10 @@
 					var clone = document.importNode(template.content, true); // clone it
 					this.createShadowRoot().appendChild(clone); // Give <slide-show> a shadow root & insert <template>
 
-					var slider = {
-
-						timer: null,
-
-						makeArr: function(coll){
-							return Array.prototype.slice.call(coll);
-						},
-
-						$: function(coll, from){
-							from = from || document;
-							return from.querySelectorAll(coll);
-						},
-
-						init: function(slider, interval, speed){
-
-							slider.ul = slider;
-							
-							// How long to spend on each image
-							slider.interval =  interval || 5000;
-							slider.speed 	=  speed || 300;
-
-							var imgs = this.makeArr(this.$('img'));
-							var last = imgs.pop();
-
-							// Add the last slide to the beginning
-							slider.insertBefore(last, imgs[0]);
-
-							this.calcDimensions(slider);
-							this.startTimer(slider);
-
-							// Pause/Resume autoscroll on hover
-							if ($('html.no-touch').length) {
-								slider.ul.hover( zSlider.stopTimer, function(){ zSlider.startTimer(slider); });
-							}
-
-							// Resize all the things
-							$(window).on('resize', function(){
-								zSlider.calcDimensions(slider);
-							});
-						},
-
-						calcDimensions: function (slider) {
-
-							// Visible area
-							slider._width = slider.offsetWidth;
-
-							// Calculate visible area, start/next positions & create buttons if necessary
-							slider.buttonWidth = Math.round(slider._width / 100 * 9.5);
-							slider.visible = slider._width - (slider.buttonWidth * 2);
-							slider.startPos = -slider.visible + slider.buttonWidth;
-							slider.nextPos = (-slider.visible * 2) + slider.buttonWidth;
-							this.createNextPrev(slider);
-							this.clickHandler(slider);
-	
-
-							var imgs = this.makeArr(this.$('img', slider));
-
-							imgs.forEach(function(current, index, arr){
-								current.width = slider.visible;
-							});
-
-							// Set the images widths
-							slider.find('li').width(slider.visible + 'px');
-
-							// Move all slides left 1 so it looks like we're at the original beginning 
-							// The last slide is now left of the first: [4][1][2][3]... etc
-							slider.ul.animate({left: slider.startPos + 'px'}, 0);
-
-							return slider;
-						},
-
-						createNextPrev: function(slider){
-							// If buttons exist, just adjust the width
-							$('.slider-button').width(slider.buttonWidth);
-						},
-
-						clickHandler: function(slider) {
-							// Setup click handlers for next/previous buttons
-							$('.slider-previous, .slider-next').off().on('click', function(e){
-								e.preventDefault;
-								zSlider.stopTimer();
-								
-								// Are we going to the next or previous slide?
-								var nextPrev = this.id,
-									distance = (nextPrev === 'js-slider-next') ? slider.nextPos : slider.buttonWidth;
-
-								// Move the slides on click
-								zSlider.moveSlides(slider, distance, nextPrev);
-							});
-						},
-
-						startTimer: function(slider){
-							zSlider.timer = setInterval(function(){
-								zSlider.moveSlides(slider, slider.nextPos); 
-							}, slider.interval);
-						},
-
-						stopTimer: function(){
-							clearInterval(zSlider.timer); 
-						},
-
-						moveSlides: function(slider, distance, nextPrev){
-							slider.ul.animate({left: distance + 'px'}, slider.speed, function(){
-								// append/prepend the first/last slide to the list
-								if (nextPrev === 'js-slider-previous') {
-									slider.ul.prepend(slider.ul.find('li').last());
-								} else {
-									slider.ul.append(slider.ul.find('li').first());
-								}
-
-								// Reset the position back to start
-								slider.ul.animate({left: slider.startPos + 'px'}, 0);
-							});
-						}
-
-					};
-
-					slider.init(this);
+					this.addEventListener('click', function(e) {
+						console.log('Slideshow clicked');
+						this.next();
+					});
 				}
 			},
 
@@ -199,9 +72,11 @@
 			}
 		})
 	});
-	
+
 	// Define a READ-ONLY property 'speed'
 	Object.defineProperty(slideShow.prototype, 'speed', {value: 500});
+
+	console.log(slideShow.prototype);
 
 })();
 
